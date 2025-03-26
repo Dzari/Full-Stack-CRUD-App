@@ -1,0 +1,29 @@
+service: contact-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 5050
+
+functions:
+  app:
+    handler: dist/index.handler
+    events:
+      - http:
+          path: contacts
+          method: get
+      - http:
+          path: contacts
+          method: post
+      - http:
+          path: contacts/{id}
+          method: put
+      - http:
+          path: contacts/{id}
+          method: delete
