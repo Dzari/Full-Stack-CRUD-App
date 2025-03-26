@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
-import { Box, Container, Grid2, Typography } from '@mui/material';
+import { Box, Container, Grid2 as Grid, Typography } from '@mui/material';
 import EditContactModal from './EditContactModal';
 
 interface Contact {
@@ -55,17 +55,17 @@ const App: React.FC = () => {
         <ContactForm onFormSubmit={fetchContacts} />
       </Container>
       <Container maxWidth="lg" sx={{ mb: 3 }}>
-        <Grid2 container spacing={3}>
+        <Grid container spacing={3}>
           {contacts.map((contact) => (
-            <Grid2 size={{ xs: 12, md: 6, lg: 4 }} key={contact.id}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }} key={contact.id}>
               <ContactList
                 contacts={[contact]}
                 onDelete={handleDelete}
                 onUpdate={handleUpdate}
               />
-            </Grid2>
+            </Grid>
           ))}
-        </Grid2>
+        </Grid>
       </Container>
       <EditContactModal
         open={isModalOpen}
