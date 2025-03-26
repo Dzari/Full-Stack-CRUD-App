@@ -3,30 +3,26 @@ import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import { Box, Container, Grid2 as Grid, Typography } from '@mui/material';
 import EditContactModal from './EditContactModal';
-
-interface Contact {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  age: number;
-}
+import { getContacts, deleteContact } from './utils/api';
+import { Contact } from './utils/types';
 
 const App: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const fetchContacts = async () => {
-    const response = await fetch('dev/contacts');
-    const data = await response.json();
-    setContacts(data);
+  const fetchContacts = () => {
+    getContacts()
+      .then((data) => {
+        setContacts(data);
+      })
+      .catch((err) => console.log(err));
   };
 
-  const handleDelete = async (id: string) => {
-    await fetch(`dev/contacts/${id}`, { method: 'DELETE' });
-    fetchContacts();
+  const handleDelete = (id: string) => {
+    deleteContact(id)
+      .then(fetchContacts)
+      .catch((err) => console.log(err));
   };
 
   const handleUpdate = (id: string) => {
@@ -37,7 +33,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleSaveContact = () => {
+  const handleClose = () => {
     fetchContacts();
     setIsModalOpen(false);
   };
@@ -67,12 +63,13 @@ const App: React.FC = () => {
           ))}
         </Grid>
       </Container>
-      <EditContactModal
-        open={isModalOpen}
-        contact={selectedContact}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveContact}
-      />
+      {selectedContact && (
+        <EditContactModal
+          open={isModalOpen}
+          contact={selectedContact}
+          onClose={handleClose}
+        />
+      )}
     </Box>
   );
 };

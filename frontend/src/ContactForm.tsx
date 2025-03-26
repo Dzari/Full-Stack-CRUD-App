@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { TextField, Button, Stack } from '@mui/material';
+import { createContact } from './utils/api';
+import { ContactFormInput } from './utils/types';
 
 interface ContactFormProps {
   onFormSubmit: () => void;
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ onFormSubmit }) => {
-  const [contact, setContact] = useState({
+  const [contact, setContact] = useState<ContactFormInput>({
     firstName: '',
     lastName: '',
     email: '',
@@ -21,23 +23,21 @@ const ContactForm: React.FC<ContactFormProps> = ({ onFormSubmit }) => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    await fetch('dev/contacts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...contact, age: Number(contact.age) }),
-    });
-
-    onFormSubmit();
-    setContact({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      age: '',
-    });
+    createContact(contact)
+      .then(() => {
+        onFormSubmit();
+        setContact({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phoneNumber: '',
+          age: '',
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

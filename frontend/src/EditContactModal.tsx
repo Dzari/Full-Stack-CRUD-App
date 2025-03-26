@@ -7,30 +7,21 @@ import {
   Button,
   Stack,
 } from '@mui/material';
-
-interface Contact {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  age: number;
-}
+import { handleContactUpdate } from './utils/api';
+import { Contact } from './utils/types';
 
 interface EditContactModalProps {
   open: boolean;
-  contact: Contact | null;
+  contact: Contact;
   onClose: () => void;
-  onSave: (updatedContact: Contact) => void;
 }
 
 const EditContactModal: React.FC<EditContactModalProps> = ({
   open,
   contact,
   onClose,
-  onSave,
 }) => {
-  const [formData, setFormData] = useState<Contact | null>(contact);
+  const [formData, setFormData] = useState<Contact>(contact);
 
   React.useEffect(() => {
     setFormData(contact);
@@ -47,17 +38,10 @@ const EditContactModal: React.FC<EditContactModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData) {
-      await fetch(`/dev/contacts/${formData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
-        .then(() => {
-          onSave(formData);
-        })
-        .finally(() => onClose());
-    }
+
+    handleContactUpdate(formData)
+      .then(() => onClose())
+      .catch((err) => console.log(err));
   };
 
   if (!formData) return null;

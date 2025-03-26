@@ -6,15 +6,7 @@ import {
   Button,
   Stack,
 } from '@mui/material';
-
-interface Contact {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  age: number;
-}
+import { Contact } from './utils/types';
 
 interface ContactListProps {
   contacts: Contact[];
